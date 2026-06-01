@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CarTracker — подбор авто</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="header">
+    <div class="header-inner">
+      <div class="header-logo">
+        <div class="logo-icon-wrap">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 17H5a2 2 0 0 1-2-2V9l2.5-5h9L17 9h2a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2Z"/><circle cx="7.5" cy="17" r="1.5"/><circle cx="16.5" cy="17" r="1.5"/></svg>
+        </div>
+        <div class="logo-text"><span>Car</span><span class="logo-gradient">Tracker</span></div>
+      </div>
+      <div class="header-actions">
+        <div class="filter-bar">
+          <button class="filter-btn active" data-status="all">Все</button>
+          <button class="filter-btn" data-status="watching">Смотрю</button>
+          <button class="filter-btn" data-status="visited">Осмотрел</button>
+          <button class="filter-btn" data-status="declined">Отказался</button>
+          <button class="filter-btn" data-status="bought">Купил</button>
+        </div>
+        <button class="btn-add" id="btnAdd">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          Добавить авто
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="main">
+    <div class="stats-bar" id="statsBar"></div>
+    <div class="cars-grid" id="carsGrid">
+      <div class="loading">Загрузка...</div>
+    </div>
+  </main>
+
+  <!-- Modal -->
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="modal" id="modal">
+      <div class="modal-header">
+        <h2 class="modal-title" id="modalTitle">Добавить автомобиль</h2>
+        <button class="modal-close" id="modalClose">&times;</button>
+      </div>
+      <form class="modal-form" id="carForm">
+        <input type="hidden" id="carId" />
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Название *</label>
+            <input type="text" id="fName" placeholder="Toyota Camry 2018" required />
+          </div>
+          <div class="form-group">
+            <label>Год</label>
+            <input type="number" id="fYear" placeholder="2018" min="1990" max="2030" />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Ссылка на объявление</label>
+          <input type="url" id="fUrl" placeholder="https://avito.ru/..." />
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Цена (₽)</label>
+            <input type="number" id="fPrice" placeholder="1 500 000" min="0" />
+          </div>
+          <div class="form-group">
+            <label>Пробег (км)</label>
+            <input type="number" id="fMileage" placeholder="85 000" min="0" />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Ссылка на фото</label>
+          <input type="url" id="fPhoto" placeholder="https://..." />
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Статус</label>
+            <select id="fStatus">
+              <option value="watching">👀 Смотрю</option>
+              <option value="visited">🔍 Съездил на осмотр</option>
+              <option value="declined">❌ Отказался</option>
+              <option value="bought">✅ Купил</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Оценка</label>
+            <div class="star-input" id="starInput">
+              <span class="star-btn" data-value="1">★</span>
+              <span class="star-btn" data-value="2">★</span>
+              <span class="star-btn" data-value="3">★</span>
+              <span class="star-btn" data-value="4">★</span>
+              <span class="star-btn" data-value="5">★</span>
+            </div>
+            <input type="hidden" id="fRating" value="0" />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Заметки</label>
+          <textarea id="fNotes" placeholder="Ваши наблюдения о машине..." rows="3"></textarea>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn-cancel" id="btnCancel">Отмена</button>
+          <button type="submit" class="btn-save">Сохранить</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Delete confirm -->
+  <div class="modal-overlay" id="deleteOverlay">
+    <div class="modal modal-sm">
+      <div class="modal-header">
+        <h2 class="modal-title">Удалить автомобиль?</h2>
+      </div>
+      <p style="padding: 0 24px; color: var(--text-secondary);">Это действие нельзя отменить.</p>
+      <div class="modal-footer" style="margin-top:16px;">
+        <button class="btn-cancel" id="deleteCancelBtn">Отмена</button>
+        <button class="btn-delete-confirm" id="deleteConfirmBtn">Удалить</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

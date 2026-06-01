@@ -8,18 +8,18 @@ const PORT = 3001;
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.get('/api/cars', (req, res) => {
+app.get('/api/cars', async (req, res) => {
   try {
-    const cars = getAllCars();
+    const cars = await getAllCars();
     res.json(cars);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 });
 
-app.get('/api/cars/:id', (req, res) => {
+app.get('/api/cars/:id', async (req, res) => {
   try {
-    const car = getCarById(Number(req.params.id));
+    const car = await getCarById(Number(req.params.id));
     if (!car) return res.status(404).json({ error: 'Not found' });
     res.json(car);
   } catch (err) {
@@ -27,36 +27,36 @@ app.get('/api/cars/:id', (req, res) => {
   }
 });
 
-app.post('/api/cars', (req, res) => {
+app.post('/api/cars', async (req, res) => {
   try {
     const { name } = req.body;
     if (!name) return res.status(400).json({ error: 'Name is required' });
-    const id = createCar(req.body);
-    const car = getCarById(id);
+    const id  = await createCar(req.body);
+    const car = await getCarById(id);
     res.status(201).json(car);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 });
 
-app.put('/api/cars/:id', (req, res) => {
+app.put('/api/cars/:id', async (req, res) => {
   try {
-    const id = Number(req.params.id);
-    const existing = getCarById(id);
+    const id       = Number(req.params.id);
+    const existing = await getCarById(id);
     if (!existing) return res.status(404).json({ error: 'Not found' });
-    updateCar(id, req.body);
-    res.json(getCarById(id));
+    await updateCar(id, req.body);
+    res.json(await getCarById(id));
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 });
 
-app.delete('/api/cars/:id', (req, res) => {
+app.delete('/api/cars/:id', async (req, res) => {
   try {
-    const id = Number(req.params.id);
-    const existing = getCarById(id);
+    const id       = Number(req.params.id);
+    const existing = await getCarById(id);
     if (!existing) return res.status(404).json({ error: 'Not found' });
-    deleteCar(id);
+    await deleteCar(id);
     res.json({ success: true });
   } catch (err) {
     res.status(500).json({ error: err.message });

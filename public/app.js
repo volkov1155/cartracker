@@ -239,6 +239,117 @@ carForm.addEventListener('submit', async e => {
   }
 });
 
+// ── VIEW MODAL ───────────────────────────────────
+const viewOverlay = document.getElementById('viewOverlay');
+let viewCarId = null;
+
+function openView(id) {
+  const car = allCars.find(c => c.id === id);
+  if (!car) return;
+  viewCarId = id;
+
+  // Photo
+  const section = document.getElementById('viewPhotoSection');
+  const existingImg = section.querySelector('img');
+  const existingPh  = section.querySelector('.view-photo-placeholder');
+  const existingGr  = section.querySelector('.view-photo-gradient');
+  if (existingImg) existingImg.remove();
+  if (existingPh)  existingPh.remove();
+  if (existingGr)  existingGr.remove();
+
+  const gradient = document.createElement('div');
+  gradient.className = 'view-photo-gradient';
+
+  if (car.photo) {
+    const img = document.createElement('img');
+    img.src = car.photo;
+    img.alt = car.name || '';
+    img.onerror = () => {
+      img.replaceWith(makePlaceholder());
+    };
+    section.appendChild(img);
+  } else {
+    section.appendChild(makePlaceholder());
+  }
+  section.appendChild(gradient);
+
+  // Badge
+  const badge = document.getElementById('viewBadge');
+  badge.textContent = statusLabels[car.status] || car.status;
+  badge.className = 'status-badge ' + (statusKeys[car.status] || '');
+
+  // Name & price
+  document.getElementById('viewName').textContent  = car.name  || '—';
+  document.getElementById('viewPrice').textContent = formatPrice(car.price);
+
+  // Specs
+  const specs = [];
+  if (car.year)    specs.push(`<div class="spec"><span class="spec-icon">📅</span>${car.year} г.</div>`);
+  if (car.mileage) specs.push(`<div class="spec"><span class="spec-icon">📏</span>${formatMileage(car.mileage)}</div>`);
+  document.getElementById('viewSpecs').innerHTML = specs.join('');
+
+  // Stars
+  document.getElementById('viewStars').innerHTML =
+    Array.from({ length: 5 }, (_, i) =>
+      `<span class="star-display ${i < (car.rating || 0) ? 'filled' : ''}">★</span>`
+    ).join('');
+
+  // Notes
+  const notesWrap = document.getElementById('viewNotesWrap');
+  if (car.notes) {
+    document.getElementById('viewNotesText').textContent = car.notes;
+    notesWrap.style.display = '';
+  } else {
+    notesWrap.style.display = 'none';
+  }
+
+  // Link
+  const link = document.getElementById('viewLink');
+  if (car.url) {
+    link.href = car.url;
+    link.style.display = '';
+  } else {
+    link.style.display = 'none';
+  }
+
+  viewOverlay.classList.add('open');
+}
+
+function makePlaceholder() {
+  const div = document.createElement('div');
+  div.className = 'view-photo-placeholder';
+  div.textContent = '🚗';
+  return div;
+}
+
+function closeView() {
+  viewOverlay.classList.remove('open');
+  viewCarId = null;
+}
+
+document.getElementById('viewClose').addEventListener('click', closeView);
+viewOverlay.addEventListener('click', e => { if (e.target === viewOverlay) closeView(); });
+
+document.getElementById('viewEditBtn').addEventListener('click', () => {
+  const id = viewCarId;
+  closeView();
+  openEdit(id);
+});
+
+document.getElementById('viewDeleteBtn').addEventListener('click', () => {
+  const id = viewCarId;
+  closeView();
+  confirmDelete(id);
+});
+
+// Card click → open view (ignore footer button/link clicks)
+document.getElementById('carsGrid').addEventListener('click', e => {
+  if (e.target.closest('.car-footer')) return;
+  const card = e.target.closest('.car-card');
+  if (!card) return;
+  openView(parseInt(card.dataset.id, 10));
+});
+
 // ── DELETE CONFIRM ────────────────────────────────
 const deleteOverlay = document.getElementById('deleteOverlay');
 

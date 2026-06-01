@@ -133,6 +133,39 @@
     </div>
   </div>
 
+  <!-- View detail modal -->
+  <div class="modal-overlay" id="viewOverlay">
+    <div class="modal modal-view" id="viewModal">
+      <div class="view-photo-section" id="viewPhotoSection">
+        <button class="view-close-btn" id="viewClose">&times;</button>
+        <span class="status-badge" id="viewBadge"></span>
+      </div>
+      <div class="view-body">
+        <div class="view-name" id="viewName"></div>
+        <div class="view-price" id="viewPrice"></div>
+        <div class="view-specs" id="viewSpecs"></div>
+        <div class="view-stars" id="viewStars"></div>
+        <div class="view-notes-wrap" id="viewNotesWrap">
+          <div class="view-notes-label">Заметки</div>
+          <div class="view-notes-text" id="viewNotesText"></div>
+        </div>
+      </div>
+      <div class="view-footer">
+        <a class="btn-link" id="viewLink" href="#" target="_blank" rel="noopener">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15,3 21,3 21,9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          Объявление
+        </a>
+        <button class="btn-icon" id="viewEditBtn">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="m18.5 2.5 3 3L12 15l-4 1 1-4Z"/></svg>
+          Изменить
+        </button>
+        <button class="btn-icon danger" id="viewDeleteBtn">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="3,6 5,6 21,6"/><path d="m19 6-.867 12.142A2 2 0 0 1 16.138 20H7.862a2 2 0 0 1-1.995-1.858L5 6"/><path d="M10 11v6M14 11v6"/><path d="m8 6 1-3h6l1 3"/></svg>
+        </button>
+      </div>
+    </div>
+  </div>
+
   <script src="app.js"></script>
 </body>
 </html>

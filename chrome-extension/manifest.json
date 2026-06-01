@@ -1,0 +1,25 @@
+{
+  "manifest_version": 3,
+  "name": "CarTracker — Авито",
+  "version": "1.0.0",
+  "description": "Парсит объявление с Авито и добавляет авто в CarTracker",
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "Добавить в CarTracker"
+  },
+  "permissions": [
+    "activeTab",
+    "scripting"
+  ],
+  "host_permissions": [
+    "*://*.avito.ru/*",
+    "http://localhost:3001/*"
+  ],
+  "content_scripts": [
+    {
+      "matches": ["*://*.avito.ru/*"],
+      "js": ["content.js"],
+      "run_at": "document_idle"
+    }
+  ]
+}

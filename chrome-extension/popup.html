@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <title>CarTracker</title>
+  <style>
+    :root {
+      --bg: #070b14;
+      --bg-card: #0d1525;
+      --bg-input: #0a1020;
+      --border: #1e2d4a;
+      --accent: #5b8aff;
+      --accent-2: #a78bfa;
+      --text: #dde5f5;
+      --text-secondary: #6b7fa8;
+      --text-muted: #344060;
+      --green: #34d399;
+      --red: #f87171;
+      --star: #f59e0b;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      width: 360px;
+      min-height: 180px;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── HEADER ── */
+    .header {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      padding: 16px 18px 14px;
+      border-bottom: 1px solid var(--border);
+      background: linear-gradient(135deg, rgba(91,138,255,0.06), rgba(167,139,250,0.03));
+    }
+
+    .logo-box {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      background: linear-gradient(140deg, #4f7cff, #a855f7);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 0 16px rgba(91,138,255,0.4);
+      flex-shrink: 0;
+    }
+
+    .logo-box svg { display: block; }
+
+    .header-text { line-height: 1.2; }
+    .header-title {
+      font-size: 15px;
+      font-weight: 800;
+      letter-spacing: -0.3px;
+    }
+
+    .header-title span {
+      background: linear-gradient(135deg, #5b8aff, #a78bfa);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .header-sub {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: 1px;
+    }
+
+    /* ── CONTENT ── */
+    .content { padding: 16px 18px; }
+
+    /* Loading */
+    .state-loading {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+      padding: 28px 0;
+      color: var(--text-secondary);
+      font-size: 13px;
+    }
+
+    .spinner {
+      width: 28px;
+      height: 28px;
+      border: 2.5px solid var(--border);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* Error / Info */
+    .state-error {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 14px;
+      background: rgba(248,113,113,0.08);
+      border: 1px solid rgba(248,113,113,0.2);
+      border-radius: 12px;
+      font-size: 13px;
+      color: var(--red);
+      line-height: 1.4;
+    }
+
+    .state-success {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      padding: 24px 0 8px;
+      color: var(--green);
+      font-size: 14px;
+      font-weight: 600;
+      text-align: center;
+    }
+
+    .state-success .success-icon { font-size: 36px; }
+    .state-success p { color: var(--text-secondary); font-size: 12px; font-weight: 400; }
+
+    /* ── PREVIEW CARD ── */
+    .preview-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      overflow: hidden;
+      margin-bottom: 14px;
+    }
+
+    .preview-photo {
+      width: 100%;
+      height: 160px;
+      object-fit: cover;
+      display: block;
+      background: var(--bg-input);
+    }
+
+    .preview-photo-placeholder {
+      width: 100%;
+      height: 120px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 40px;
+      background: var(--bg-input);
+      color: var(--text-muted);
+    }
+
+    .preview-body { padding: 13px 14px; }
+
+    .preview-name {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text);
+      line-height: 1.3;
+      margin-bottom: 5px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .preview-price {
+      font-size: 20px;
+      font-weight: 900;
+      letter-spacing: -0.5px;
+      background: linear-gradient(135deg, #5b8aff, #a78bfa);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 8px;
+    }
+
+    .preview-specs {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .spec-pill {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 11.5px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 3px 8px;
+    }
+
+    .preview-url {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: 8px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .preview-url a {
+      color: var(--accent);
+      text-decoration: none;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .preview-url a:hover { text-decoration: underline; }
+
+    /* ── BUTTON ── */
+    .btn-add {
+      width: 100%;
+      padding: 12px;
+      border: none;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #4f7cff 0%, #8b5cf6 100%);
+      color: #fff;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: opacity 0.2s, transform 0.15s;
+      box-shadow: 0 4px 18px rgba(79,124,255,0.35);
+      font-family: inherit;
+    }
+
+    .btn-add:hover { opacity: 0.9; transform: translateY(-1px); }
+    .btn-add:active { transform: translateY(0); }
+    .btn-add:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+    .not-avito {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      padding: 28px 16px;
+      text-align: center;
+    }
+
+    .not-avito .big-icon { font-size: 40px; }
+    .not-avito strong { font-size: 14px; font-weight: 600; color: var(--text); }
+    .not-avito p { font-size: 12px; color: var(--text-secondary); line-height: 1.5; }
+
+    .footer-hint {
+      font-size: 11px;
+      color: var(--text-muted);
+      text-align: center;
+      margin-top: 10px;
+    }
+
+    .footer-hint a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    .hidden { display: none !important; }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <div class="logo-box">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M19 17H5a2 2 0 0 1-2-2V9l2.5-5h9L17 9h2a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2Z"/>
+        <circle cx="7.5" cy="17" r="1.5"/><circle cx="16.5" cy="17" r="1.5"/>
+      </svg>
+    </div>
+    <div class="header-text">
+      <div class="header-title">Car<span>Tracker</span></div>
+      <div class="header-sub">Авито Парсер</div>
+    </div>
+  </div>
+
+  <div class="content" id="content">
+
+    <!-- Not on Avito -->
+    <div id="stateNotAvito" class="not-avito hidden">
+      <div class="big-icon">🔍</div>
+      <strong>Откройте объявление на Авито</strong>
+      <p>Перейдите на страницу объявления об автомобиле на avito.ru и нажмите расширение снова.</p>
+    </div>
+
+    <!-- Loading -->
+    <div id="stateLoading" class="state-loading">
+      <div class="spinner"></div>
+      <span>Считываем данные со страницы...</span>
+    </div>
+
+    <!-- Error -->
+    <div id="stateError" class="state-error hidden">
+      <span>⚠️</span>
+      <span id="errorText">Ошибка</span>
+    </div>
+
+    <!-- Preview -->
+    <div id="statePreview" class="hidden">
+      <div class="preview-card">
+        <img id="previewPhoto" class="preview-photo hidden" alt="фото" />
+        <div id="previewPhotoPlaceholder" class="preview-photo-placeholder">🚗</div>
+        <div class="preview-body">
+          <div class="preview-name" id="previewName">—</div>
+          <div class="preview-price" id="previewPrice">—</div>
+          <div class="preview-specs" id="previewSpecs"></div>
+          <div class="preview-url" id="previewUrl"></div>
+        </div>
+      </div>
+      <button class="btn-add" id="btnAdd">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        Добавить в CarTracker
+      </button>
+      <div class="footer-hint">Данные будут отправлены на <a href="http://localhost:3001" target="_blank">localhost:3001</a></div>
+    </div>
+
+    <!-- Success -->
+    <div id="stateSuccess" class="state-success hidden">
+      <div class="success-icon">✅</div>
+      <span>Добавлено в CarTracker!</span>
+      <p>Машина появится на главной странице</p>
+    </div>
+
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>
